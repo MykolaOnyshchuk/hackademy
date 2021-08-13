@@ -9,7 +9,7 @@ MANDATORY		= memset bzero memcpy memmove memchr memcmp isalpha isdigit \
 				striteri
 
 CC		= clang++
-CFLAGS	= -g3 -ldl -std=c++11 -I utils/ -I$(LIBFT_PATH)
+CFLAGS	= -g3 -ldl -std=c99 -I utils/ -I$(LIBFT_PATH)
 UNAME = $(shell uname -s)
 VALGRIND = valgrind -q --leak-check=full
 
