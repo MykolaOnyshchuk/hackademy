@@ -1,6 +1,6 @@
-#include <stdbool.h>
+#include "libft.h"
 
-char *ft_strnstr (char* strB, *char strA, size_t len)
+char *ft_strnstr (const char *strB, const char *strA, size_t len)
 {
 	char *ptr = strB;
 	bool found = false;

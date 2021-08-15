@@ -1,3 +1,5 @@
+#include "libft.h"
+
 char *ft_strdup (const char *str)
 {
 	char *new_str;
@@ -6,7 +8,7 @@ char *ft_strdup (const char *str)
 	{
 		i++;
 	}
-	new_str = (char *) malloc(i + 1);
+	new_str =  malloc((i + 1) * sizeof(*str));
 	for (int j = 0; j < i; j++)
 	{
 		new_str[j] = str[j];

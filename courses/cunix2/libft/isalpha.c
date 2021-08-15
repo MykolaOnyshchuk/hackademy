@@ -1,3 +1,5 @@
+#include "libft.h"
+
 int ft_isalpha (int ch)
 {
 	int ind = (int) ch;

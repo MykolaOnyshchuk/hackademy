@@ -1,3 +1,5 @@
+#include "libft.h"
+
 int ft_isascii (int ch)
 {
 	int ind = (int) ch;
@@ -9,3 +11,4 @@ int ft_isascii (int ch)
 	{
 		return 0;
 	}
+}

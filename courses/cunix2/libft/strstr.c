@@ -1,4 +1,4 @@
-#include <stdbool.h>
+#include "libft.h"
 
 char *ft_strstr (const char *strB, const char *strA)
 {
@@ -6,26 +6,26 @@ char *ft_strstr (const char *strB, const char *strA)
 	bool found = false;
 	int countA = 0;
 	int countB = 0;
-	if (countA == "\0")
+	if (*strA == '\0')
 	{
 		return ptr;
 	}
 	else
 	{
-		while (*strB != "\0" && found == false)
+		while (*strB != '\0' && found == false)
 		{
 			if (*strB == *strA)
 			{
 				countA = 0;
 				countB = 0;
-				while ((*strA != "\0" && *strB != "\0") && (found == false && *strA == *strB))
+				while ((*strA != '\0' && *strB != '\0') && (found == false && *strA == *strB))
 				{
 					strA++;
 					strB++;
 					countA++;
 					countB++;
 				}
-				if (strA == "\0")
+				if (*strA == '\0')
 				{
 					found = true;
 				}

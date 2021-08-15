@@ -1,3 +1,5 @@
+#include "libft.h"
+
 int ft_isdigit (int ch)
 {
 	int ind = (int) ch;
@@ -7,6 +9,6 @@ int ft_isdigit (int ch)
 	}
 	else
 	{
-		retutn 0;
+		return 0;
 	}
 }

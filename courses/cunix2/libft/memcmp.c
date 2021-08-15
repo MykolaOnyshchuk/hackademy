@@ -1,4 +1,6 @@
-int memcmp (const void * buf1, const void *buf 2, size_t count)
+#include "libft.h"
+
+int ft_memcmp (const void *buf1, const void *buf2, size_t count)
 {
 	char *cbuf1 = (char *) buf1;
 	char *cbuf2 = (char *) buf2;

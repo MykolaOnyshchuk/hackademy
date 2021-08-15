@@ -1,23 +1,24 @@
-#include <stdbool.h>
+#include "libft.h"
 
 void *ft_memchr (const void *arr, int c, size_t n)
 {
+	char *carr = (char *) arr;
 	bool found = true;
 	for (int i = 0; i < n; i++)
 	{
-		if (*arr == c)
+		if (*carr == c)
 		{
 			found == true;
 			break;
 		}
-		arr++;
+		carr++;
 		if (found == true)
 		{
-			return arr;
+			return carr;
 		}
 		else
 		{
 			return NULL;
 		}
 	}
-
+}
