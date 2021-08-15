@@ -4,11 +4,11 @@ char *ft_strjoin (const char *s1, const char *s2)
 {
 	int len1 = 0;
 	int len2 = 0;
-	while (*s1)
+	while (s1[len1] != '\0')
 	{
 		len1++;
 	}
-	while (*s2)
+	while (s2[len2] != '\0')
 	{
 		len2++;
 	}

@@ -6,19 +6,10 @@ void *ft_memchr (const void *arr, int c, size_t n)
 	bool found = true;
 	for (int i = 0; i < n; i++)
 	{
-		if (*carr == c)
+		if (carr[i] == c)
 		{
-			found == true;
-			break;
-		}
-		carr++;
-		if (found == true)
-		{
-			return carr;
-		}
-		else
-		{
-			return NULL;
+			return &carr[i];
 		}
 	}
+	return NULL;
 }

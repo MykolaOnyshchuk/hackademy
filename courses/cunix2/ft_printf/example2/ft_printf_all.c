@@ -1,10 +1,14 @@
+#include "ft_printf.h"
+
 void ft_printf (char *format_str, ...)
 {
 	char *str_copy;
-	unsigned int i;
+	int i;
 	char *s;
 	va_list arg;
 	va_start(arg, str_copy);
+	bool plus = false;
+	bool space = false;
 
 	for (str_copy = format_str; *str_copy != '\0'; str_copy++)
 	{
@@ -16,6 +20,16 @@ void ft_printf (char *format_str, ...)
 		str_copy++;
 		int count = 0;
 		int char_num = 0;
+		if (*str_copy == '+')
+		{
+			plus = true;
+			str_copy++;
+		}
+		if (*str_copy == ' ')
+		{
+			space = true;
+			str_copy++;
+		}
 		if (*str_copy == '0')
 		{
 			str_copy++;
@@ -54,6 +68,20 @@ void ft_printf (char *format_str, ...)
 		}
 		else if (*str_copy == 'i')
 		{
+			if (plus == true)
+			{
+				if (i > 0)
+				{
+					putchar('+');
+				}
+			}
+			else if (space == true)
+			{
+				if (i > 0)
+				{
+					putchar(' ');
+				}
+			}
 			if (i < 0)
 			{
 				i = i - 2 * i;
@@ -92,7 +120,7 @@ char *to_string (int n, int base)
 		*--ptr = rep[n % base];
 		n /= base;
 	} while (n != 0);
-	rfeturn ptr;
+	return (ptr);
 }
 
 int my_atoi (char *s)

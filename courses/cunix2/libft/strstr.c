@@ -12,10 +12,11 @@ char *ft_strstr (const char *strB, const char *strA)
 	}
 	else
 	{
-		while (*strB != '\0' && found == false)
+		while (*strB != '\0')
 		{
 			if (*strB == *strA)
 			{
+				*ptr = *strB;
 				countA = 0;
 				countB = 0;
 				while ((*strA != '\0' && *strB != '\0') && (found == false && *strA == *strB))
@@ -28,24 +29,28 @@ char *ft_strstr (const char *strB, const char *strA)
 				if (*strA == '\0')
 				{
 					found = true;
+					return ptr;
 				}
-				for (int i = 1; i <= countA; i++)
-				{
-					strA--;
-				}
-				for (int i = 1; i <=countB; i++)
-				{
-					strB--;
-				}
+
+				//for (int i = 1; i <= countA; i++)
+				//{
+				//	strA--;
+				//}
+				//for (int i = 1; i <=countB; i++)
+				//{
+				//	strB--;
+				//}
 			}
+			strB++;
 		}
 		if (found == true)
-		{
-			return ptr;
-		}
-		else
-		{
-			return NULL;
-		}
+		//{
+		//	return ptr;
+		//}
+		//else
+		//{
+		//	return NULL;
+		//}
+		return NULL;
 	}
 }

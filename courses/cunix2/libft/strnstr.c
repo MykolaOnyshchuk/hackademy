@@ -17,6 +17,7 @@ char *ft_strnstr (const char *strB, const char *strA, size_t len)
 		{
 			if (*strB == *strA)
 			{
+				*ptr = *strB;
 				countA == 0;
 				countB == 0;
 				ind = 0;
@@ -31,24 +32,27 @@ char *ft_strnstr (const char *strB, const char *strA, size_t len)
 				if (strA == "\0" || ind == len)
 				{
 					found = true;
+					return ptr;
 				}
-				for (int i = 1; i <= countA; i++)
-				{
-					strA--;
-				}
-				for (int i = 1; i <= countB; i++)
-				{
-					strB--;
-				}
+				//for (int i = 1; i <= countA; i++)
+				//{
+				//	strA--;
+				//}
+				//for (int i = 1; i <= countB; i++)
+				//{
+				//	strB--;
+				//}
 			}
+			strB++;
 		}
-		if (found == true)
-		{
-			return ptr;
-		}
-		else
-		{
-			return NULL;
-		}
+		//if (found == true)
+		//{
+		//	return ptr;
+		//}
+		//else
+		//{
+		//	return NULL;
+		//
+		return NULL;
 	}
 }

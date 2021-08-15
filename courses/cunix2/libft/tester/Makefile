@@ -6,7 +6,7 @@ TESTS_PATH		= tests/
 MANDATORY		= abs div bzero memcpy memmove memchr memcmp isalpha isdigit \
 				isascii toupper tolower strchr strrchr strncmp strnstr \
 				strdup strsub strjoin strtrim strsplit strmap \
-				striter memset strstr
+				striter memset strstr memccpy
 
 
 CC = clang++

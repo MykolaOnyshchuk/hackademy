@@ -3,7 +3,7 @@
 char *ft_strtrim (const char *s)
 {
 	int len = 0;
-	while (*s)
+	while (s[len] != '\0')
 	{
 		len++;
 	}
@@ -18,7 +18,7 @@ char *ft_strtrim (const char *s)
 		start++;
 	}
 	char *new_s;
-	if (new_s = (char *) malloc((end + 2 - start) * sizeof(*new_s)))
+	if (new_s = (char *) malloc((end + 2 - start) * sizeof(char)))
 	{}
 	else
 	{
