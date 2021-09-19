@@ -8,7 +8,6 @@ MANDATORY		= abs div bzero memcpy memccpy memmove memchr memcmp isalpha isdigit 
 				strdup strsub strjoin strtrim strsplit strmap \
 				striter memset strstr memccpy
 
-
 CC = clang++
 CFLAGS	= -g3 -ldl -std=c++98 -I utils/ -I$(LIBFT_PATH)
 UNAME = $(shell uname -s)
