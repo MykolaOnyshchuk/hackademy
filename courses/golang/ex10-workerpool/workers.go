@@ -2,8 +2,14 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"fmt"
+	"log"
+	"net"
+	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 )
 
@@ -59,4 +65,56 @@ func main() {
 	for a := 1; a <= numJobs; a++ {
 		<-results
 	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+		fmt.Fprintf(w, "Hello!")
+	})
+
+	httpServer := &http.Server{
+		Addr:        ":8080",
+		Handler:     mux,
+		BaseContext: func(_ net.Listener) context.Context { return ctx },
+	}
+
+	go func() {
+		if err := httpServer.ListenAndServe(); err != http.ErrServerClosed {
+			log.Fatalf("HTTP server ListenAndServe: %v", err)
+		}
+	}()
+
+	signalChan := make(chan os.Signal, 1)
+
+	signal.Notify(
+		signalChan,
+		syscall.SIGHUP,
+		syscall.SIGINT,
+		syscall.SIGTERM,
+	)
+
+	<-signalChan
+	log.Print("os.Interrupt - shutting down...\n")
+
+	go func() {
+		<-signalChan
+		log.Fatal("os.Kill - terminating...\n")
+	}()
+
+	gracefullCtx, cancelShutdown := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancelShutdown()
+
+	if err := httpServer.Shutdown(gracefullCtx); err != nil {
+		log.Printf("shutdown error: %v\n", err)
+		defer os.Exit(1)
+		return
+	} else {
+		log.Printf("gracefully stopped\n")
+	}
+
+	cancel()
+
+	defer os.Exit(0)
+	return
 }
