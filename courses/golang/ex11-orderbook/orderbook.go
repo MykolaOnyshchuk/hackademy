@@ -74,6 +74,55 @@ func (orderbook *Orderbook) ordersManaging(order, storedOrder *Order) (trade *Tr
 	return
 }
 
+func (orderbook *Orderbook) bestLimit(order *Order) *Order {
+	differentSideOrders := make([]*Order, 0)
+	for i := 0; i < len(orderbook.orders); i++ {
+		if order.Side == orderbook.orders[i].Side {
+			continue
+		}
+		differentSideOrders = append(differentSideOrders, orderbook.orders[i])
+	}
+	potentialOrders := differentSideOrders
+	if len(potentialOrders) == 0 {
+		return nil
+	}
+	var mostProfitable *Order
+	for i := 0; i < len(potentialOrders); i++ {
+		mostProfitable = order.bestAskLimit(potentialOrders[i], mostProfitable)
+		mostProfitable = order.bestBidLimit(potentialOrders[i], mostProfitable)
+	}
+	return mostProfitable
+}
+
+func (order *Order) bestAskLimit(storedOrder *Order, mostProfitable *Order) *Order {
+	if order.Side == SideAsk && order.Price <= storedOrder.Price && (mostProfitable == nil || storedOrder.Price-order.Price > mostProfitable.Price-order.Price) {
+		mostProfitable = storedOrder
+	}
+	return mostProfitable
+}
+
+func (order *Order) bestBidLimit(storedOrder *Order, mostProfitable *Order) *Order {
+	if order.Side == SideBid && order.Price >= storedOrder.Price && (mostProfitable == nil || order.Price-storedOrder.Price > order.Price-mostProfitable.Price) {
+		mostProfitable = storedOrder
+	}
+	return mostProfitable
+}
+
+func (orderbook *Orderbook) LimitOrderProcedure(order *Order) (trades []*Trade) {
+	trades = make([]*Trade, 0)
+
+	profitable := orderbook.bestLimit(order)
+	for profitable != nil {
+		trade, satisfied := orderbook.ordersManaging(order, profitable)
+		trades = append(trades, trade)
+		if satisfied {
+			return
+		}
+		profitable = orderbook.bestLimit(order)
+	}
+	return
+}
+
 func (orderbook *Orderbook) bestMarket(order *Order) *Order {
 	differentSideOrders := make([]*Order, 0)
 	for i := 0; i < len(orderbook.orders); i++ {
@@ -88,27 +137,28 @@ func (orderbook *Orderbook) bestMarket(order *Order) *Order {
 	}
 	var mostProfitable *Order
 	for i := 0; i < len(potentialOrders); i++ {
-		mostProfitable = order.bestAsk(potentialOrders[i], mostProfitable)
-		mostProfitable = order.bestBid(potentialOrders[i], mostProfitable)
+
+		mostProfitable = order.bestAskLimit(potentialOrders[i], mostProfitable)
+		mostProfitable = order.bestAskMarket(potentialOrders[i], mostProfitable)
 	}
 	return mostProfitable
 }
 
-func (order *Order) bestAsk(storedOrder *Order, mostProfitable *Order) *Order {
-	if order.Side == SideAsk && order.Price <= storedOrder.Price && (mostProfitable == nil || storedOrder.Price-order.Price > mostProfitable.Price-order.Price) {
+func (order *Order) bestAskMarket(storedOrder *Order, mostProfitable *Order) *Order {
+	if order.Side == SideAsk && mostProfitable == nil || storedOrder.Price > mostProfitable.Price {
 		mostProfitable = storedOrder
 	}
 	return mostProfitable
 }
 
-func (order *Order) bestBid(storedOrder *Order, mostProfitable *Order) *Order {
-	if order.Side == SideBid && order.Price >= storedOrder.Price && (mostProfitable == nil || order.Price-storedOrder.Price > order.Price-mostProfitable.Price) {
+func (order *Order) bestBidMarket(storedOrder *Order, mostProfitable *Order) *Order {
+	if order.Side == SideBid && mostProfitable == nil || storedOrder.Price < mostProfitable.Price {
 		mostProfitable = storedOrder
 	}
 	return mostProfitable
 }
 
-func (orderbook *Orderbook) LimitOrderProcedure(order *Order) (trades []*Trade) {
+func (orderbook *Orderbook) MarketOrderProcedure(order *Order) (trades []*Trade) {
 	trades = make([]*Trade, 0)
 
 	profitable := orderbook.bestMarket(order)
@@ -119,52 +169,6 @@ func (orderbook *Orderbook) LimitOrderProcedure(order *Order) (trades []*Trade) 
 			return
 		}
 		profitable = orderbook.bestMarket(order)
-	}
-	return
-}
-
-func (orderbook *Orderbook) findMostProfitableMarket(order *Order) *Order {
-	differentSideOrders := make([]*Order, 0)
-	for i := 0; i < len(orderbook.orders); i++ {
-		if order.Side == orderbook.orders[i].Side {
-			continue
-		}
-		differentSideOrders = append(differentSideOrders, orderbook.orders[i])
-	}
-	potentialOrders := differentSideOrders
-	if len(potentialOrders) == 0 {
-		return nil
-	}
-	var mostProfitable *Order
-	for i := 0; i < len(potentialOrders); i++ {
-
-		if order.Side == SideBid {
-			if mostProfitable == nil ||
-				potentialOrders[i].Price < mostProfitable.Price {
-				mostProfitable = potentialOrders[i]
-			}
-		}
-		if order.Side == SideAsk {
-			if mostProfitable == nil ||
-				potentialOrders[i].Price > mostProfitable.Price {
-				mostProfitable = potentialOrders[i]
-			}
-		}
-	}
-	return mostProfitable
-}
-
-func (orderbook *Orderbook) MarketOrderProcedure(order *Order) (trades []*Trade) {
-	trades = make([]*Trade, 0)
-
-	profitable := orderbook.findMostProfitableMarket(order)
-	for profitable != nil {
-		trade, satisfied := orderbook.ordersManaging(order, profitable)
-		trades = append(trades, trade)
-		if satisfied {
-			return
-		}
-		profitable = orderbook.findMostProfitableMarket(order)
 	}
 	return
 }
